@@ -1,0 +1,112 @@
+@import "node_modules/react-toastify/dist/ReactToastify.css";
+@import "node_modules/@uploadthing/react/dist/index.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  transition: background-color .2s;
+}
+
+svg {
+  width: 1.5rem;
+}
+
+input {
+  outline: none;
+}
+
+input[id="search"]:focus {
+  -webkit-box-shadow: 0 0 20px -10px rgba(126, 34, 206, 0.8);
+  -moz-box-shadow: 0 0 20px -10px rgba(126, 34, 206, 0.8);
+  box-shadow: 0 0 20px -10px rgba(126, 34, 206, 0.8);
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+input[type="checkbox"] {
+  opacity: 0;
+}
+
+input[type="checkbox"]:checked ~ .checkbox {
+  background-color: #ddd6fe;
+  border: none;
+}
+
+input[type="checkbox"]:checked ~ .checkbox > .check-icon {
+  opacity: 1;
+}
+
+input[type="checkbox"][disabled] ~ .checkbox {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+html.dark input[type="checkbox"][disabled] ~ .checkbox {
+  background-color: #5b21b6;
+  border-color: #4c1d95;
+}
+
+main {
+  padding: 2rem 0;
+}
+
+details > summary {
+  list-style: none;
+}
+
+details summary svg.arrow {
+  transition: transform 0.2s;
+}
+
+details[open] summary svg.arrow {
+  transform: rotate(180deg);
+}
+
+.gradient {
+  animation-duration: 1.8s;
+  animation-fill-mode: forwards;
+  animation-iteration-count: infinite;
+  animation-name: placeHolderShimmer;
+  animation-timing-function: linear;
+  background: #e0e0e0;
+  background: linear-gradient(to right, #fafafa 8%, #f4f4f4 38%, #fafafa 54%);
+  background-size: 1000px 640px;
+  position: relative;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c2c2c2;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+@keyframes placeHolderShimmer{
+  0%{
+    background-position: -468px 0
+  }
+  100%{
+    background-position: 468px 0
+  }
+}
+
