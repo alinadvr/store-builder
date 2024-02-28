@@ -4,7 +4,7 @@ import { Loading } from "@/components/layout/Loading";
 import { FilterBlock } from "@/features/marketplace/FilterBlock";
 import { FilterTabs } from "@/features/marketplace/FilterBlock/FilterTabs";
 import { ProductBlock } from "@/features/marketplace/ProductBlock";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 import { useLocalStorage } from "@/utils/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -25,7 +25,7 @@ export default function Category({ params }: { params: { category: string } }) {
       axios(`/api/products/categories/${getCategoryFromURL(params.category)}`),
   });
 
-  const [filteredData, setFilteredData] = useState<ProductDataType[]>([]);
+  const [filteredData, setFilteredData] = useState<Product[]>([]);
 
   function getCategoryFromURL(url: string) {
     return decodeURI(url.split("%2C").join(","));
@@ -74,7 +74,7 @@ export default function Category({ params }: { params: { category: string } }) {
 
   function getSelectedFilter(filter: string) {
     return selectedFilters.filter(
-      (selectedFilter) => selectedFilter["filter"] === filter
+      (selectedFilter) => selectedFilter["filter"] === filter,
     )[0];
   }
 
@@ -87,8 +87,8 @@ export default function Category({ params }: { params: { category: string } }) {
     if (products && products?.data.length > 0) {
       if (selectedFilters.length === 0) setFilteredData(products.data);
       else {
-        const newFilteredData: ProductDataType[] = [];
-        products.data.map((product: ProductDataType) => {
+        const newFilteredData: Product[] = [];
+        products.data.map((product: Product) => {
           product.options &&
             selectedFilters.forEach((selectedFilter) => {
               if (product.options && selectedFilter.filter in product.options) {

@@ -1,11 +1,11 @@
-import { Shop } from "@/models/shopModel";
+import { ShopModel } from "@/models/shopModel";
 import { connectDB } from "@/utils/connectDB";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   await connectDB();
 
-  const response = await Shop.find({ popular: true });
+  const response = await ShopModel.find({ popular: true });
 
   return NextResponse.json(response);
 }

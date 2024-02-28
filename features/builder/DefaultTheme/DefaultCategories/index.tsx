@@ -3,7 +3,7 @@
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Loading } from "@/components/layout/Loading";
 import { DefaultProductBlock } from "@/features/builder/DefaultTheme/DefaultProductBlock";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 import { useLocalStorage } from "@/utils/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -39,7 +39,7 @@ export function DefaultCategories({
     if (products.data.length > 0)
       return (
         <div className="mx-auto grid min-h-[38vh] grid-cols-6 gap-4">
-          {products.data.map((product: ProductDataType) => (
+          {products.data.map((product: Product) => (
             <DefaultProductBlock
               key={product._id}
               {...product}

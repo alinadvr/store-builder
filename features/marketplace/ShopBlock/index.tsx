@@ -1,8 +1,8 @@
-import { ShopDataType } from "@/models/shopModel";
+import { Shop } from "@/models/shopModel";
 import Image from "next/image";
 import Link from "next/link";
 
-export function ShopBlock({ title, image, link }: ShopDataType) {
+export function ShopBlock({ title, image, link }: Shop) {
   return (
     <Link
       href={`/shop/${link}`}

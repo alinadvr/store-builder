@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
 
-export interface ShopDataType {
+export interface Shop {
   _id: string;
   title: string;
   link: string;
@@ -44,4 +44,4 @@ const shopSchema = new Schema({
   popular: Boolean,
 });
 
-export const Shop = models.Shop || model("Shop", shopSchema);
+export const ShopModel = models.Shop || model("Shop", shopSchema);

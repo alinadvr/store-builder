@@ -2,7 +2,7 @@
 
 import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Loading } from "@/components/layout/Loading";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 import { TrashIcon } from "@heroicons/react/24/outline";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
@@ -28,9 +28,9 @@ export default function Products({ params }: { params: { shop: string } }) {
         ["products", session.data?.user.image],
         products && {
           data: products.data.filter(
-            (product: ProductDataType) => product._id !== data._id
+            (product: Product) => product._id !== data._id,
           ),
-        }
+        },
       );
     },
   });
@@ -83,7 +83,7 @@ export default function Products({ params }: { params: { shop: string } }) {
                     amount,
                     categoryShop,
                     categoryMP,
-                  }: ProductDataType) => (
+                  }: Product) => (
                     <tr key={title}>
                       <td className="p-4">{article}</td>
                       <td className="p-4">
@@ -110,7 +110,7 @@ export default function Products({ params }: { params: { shop: string } }) {
                         />
                       </td>
                     </tr>
-                  )
+                  ),
                 )
               ) : (
                 <tr>

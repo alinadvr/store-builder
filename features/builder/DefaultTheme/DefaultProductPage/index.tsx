@@ -1,12 +1,8 @@
 import { ProductImages } from "@/features/builder/DefaultTheme/DefaultProductPage/ProductImages";
 import { ProductOptions } from "@/features/builder/DefaultTheme/DefaultProductPage/ProductOptions";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 
-interface DefaultProductPageProps {
-  product: ProductDataType;
-}
-
-export function DefaultProductPage({ product }: DefaultProductPageProps) {
+export function DefaultProductPage({ product }: { product: Product }) {
   return (
     <div className="mx-auto flex w-3/4 gap-10">
       <ProductImages images={product.images} alt={product.title} />

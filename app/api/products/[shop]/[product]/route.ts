@@ -1,6 +1,7 @@
-import { Product } from "@/models/productModel";
-import { connectDB } from "@/utils/connectDB";
 import { NextResponse } from "next/server";
+
+import { connectDB } from "@/utils/connectDB";
+import { ProductModel } from "@/models/productModel";
 
 export async function GET(request: Request) {
   const url = request.url;
@@ -12,22 +13,32 @@ export async function GET(request: Request) {
 
   await connectDB();
 
-  const products = await Product.find({ title: productTitle }).populate({
-    path: "shop",
-  });
+  try {
+    const products = await ProductModel.find({ title: productTitle }).populate({
+      path: "shop",
+    });
 
-  const filteredProducts = products.filter(
-    (product) => product.shop.link === shopLink
-  );
+    const filteredProducts = products.filter(
+      (product) => product.shop.link === shopLink,
+    );
 
-  const response = filteredProducts.map((product) => ({
-    ...product._doc,
-    price: Number(product.price).toFixed(2),
-    discountPrice:
-      product.discountPrice && Number(product.discountPrice).toFixed(2),
-  }));
+    const response = filteredProducts.map((product) => ({
+      ...product._doc,
+      price: Number(product.price).toFixed(2),
+      discountPrice:
+        product.discountPrice && Number(product.discountPrice).toFixed(2),
+    }));
 
-  return NextResponse.json(response[0]);
+    return NextResponse.json(response[0]);
+  } catch (error) {
+    console.log("[ERROR WHILE GETTING SHOP PRODUCT]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to load product. Please try reloading the page",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function DELETE(request: Request) {
@@ -39,7 +50,19 @@ export async function DELETE(request: Request) {
 
   await connectDB();
 
-  const response = await Product.findOneAndDelete({ title });
+  try {
+    await ProductModel.findOneAndDelete({ title });
 
-  return NextResponse.json(response);
+    return NextResponse.json({
+      message: `Product ${title} was deleted successfully`,
+    });
+  } catch (error) {
+    console.log("[ERROR WHILE DELETING SHOP PRODUCT]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to load products. Please try reloading the page",
+      },
+      { status: 500 },
+    );
+  }
 }

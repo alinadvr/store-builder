@@ -1,15 +1,17 @@
 import { DefaultCategories } from "@/features/builder/DefaultTheme/DefaultCategories";
 import { DefaultLayout } from "@/features/builder/DefaultTheme/DefaultLayout";
-import { Shop } from "@/models/shopModel";
+import { ShopModel } from "@/models/shopModel";
 import { connectDB } from "@/utils/connectDB";
 import { Metadata, ResolvingMetadata } from "next";
 
 export async function generateMetadata(
   { params }: { params: { shop: string; category: string } },
-  parent: ResolvingMetadata
+  parent: ResolvingMetadata,
 ): Promise<Metadata> {
   await connectDB();
-  const res = await Shop.findOne({ link: params.shop }).select("title -_id");
+  const res = await ShopModel.findOne({ link: params.shop }).select(
+    "title -_id",
+  );
 
   return {
     title:

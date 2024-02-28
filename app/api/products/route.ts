@@ -1,24 +1,35 @@
-import { Product } from "@/models/productModel";
-import { Shop } from "@/models/shopModel";
-import { connectDB } from "@/utils/connectDB";
 import { NextResponse } from "next/server";
+
+import { connectDB } from "@/utils/connectDB";
+import { ProductModel } from "@/models/productModel";
+import { ShopModel } from "@/models/shopModel";
 
 export async function GET() {
   await connectDB();
 
-  const products = await Product.find().populate({
-    path: "shop",
-    select: "-email -password",
-  });
+  try {
+    const products = await ProductModel.find().populate({
+      path: "shop",
+      select: "-email -password",
+    });
 
-  const response = products.map((product) => ({
-    ...product._doc,
-    price: Number(product.price).toFixed(2),
-    discountPrice:
-      product.discountPrice && Number(product.discountPrice).toFixed(2),
-  }));
+    const response = products.map((product) => ({
+      ...product._doc,
+      price: Number(product.price).toFixed(2),
+      discountPrice:
+        product.discountPrice && Number(product.discountPrice).toFixed(2),
+    }));
 
-  return NextResponse.json(response);
+    return NextResponse.json(response);
+  } catch (error) {
+    console.log("[ERROR WHILE GETTING PRODUCTS]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to load products. Please try reloading the page",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -26,9 +37,9 @@ export async function POST(request: Request) {
 
   await connectDB();
 
-  const shop = await Shop.findOne({ link: body.shop }).select("_id");
+  const shop = await ShopModel.findOne({ link: body.shop }).select("_id");
 
-  const newProduct = await Product.create({
+  const newProduct = await ProductModel.create({
     ...body,
     amount: body.amount | 0,
     shop: shop._id,

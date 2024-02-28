@@ -1,9 +1,9 @@
 import { LikeButton } from "@/components/buttons/LikeButton";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 import Image from "next/image";
 import Link from "next/link";
 
-interface ProductBlockProps extends ProductDataType {
+interface ProductBlockProps extends Product {
   saved: boolean;
   updateSaved: () => void;
 }

@@ -1,6 +1,6 @@
 import { CartProductDataType } from "@/features/marketplace/ProductList/CartItem";
 import { Order } from "@/models/orderModel";
-import { ShopDataType } from "@/models/shopModel";
+import { Shop } from "@/models/shopModel";
 import { User } from "@/models/userModel";
 import { connectDB } from "@/utils/connectDB";
 import mongoose from "mongoose";
@@ -53,11 +53,11 @@ export async function POST(request: Request) {
     };
 
   const allShops: string[] = cartProducts.map(
-    ({ shop }: CartProductDataType) => (shop as ShopDataType)._id
+    ({ shop }: CartProductDataType) => (shop as Shop)._id,
   );
 
   const shops = allShops.filter(
-    (value, index) => allShops.indexOf(value) === index
+    (value, index) => allShops.indexOf(value) === index,
   );
 
   // { shopId: { productId: { option?: value, product_amount: value }, productId: { option?: value, product_amount: value } }
@@ -68,8 +68,9 @@ export async function POST(request: Request) {
 
   cartProducts.map(
     (product: CartProductDataType) =>
-      (shopOrder[(product.shop as ShopDataType)._id][product._id] =
-        product.options || { product_amount: "1" })
+      (shopOrder[(product.shop as Shop)._id][product._id] = product.options || {
+        product_amount: "1",
+      }),
   );
 
   let orders = [];

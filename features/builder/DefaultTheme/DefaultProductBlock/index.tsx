@@ -1,14 +1,16 @@
 "use client";
 
-import { LikeButton } from "@/components/buttons/LikeButton";
-import { ProductDataType } from "@/models/productModel";
-import classNames from "@/utils/classNames";
-import { useCart } from "@/utils/useCart";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "react-toastify";
 
-interface DefaultProductBlockProps extends ProductDataType {
+import classNames from "@/utils/classNames";
+import { useCart } from "@/utils/useCart";
+import { Product } from "@/models/productModel";
+
+import { LikeButton } from "@/components/buttons/LikeButton";
+
+interface DefaultProductBlockProps extends Product {
   shopLink: string;
   saved: boolean;
   updateSaved: () => void;
@@ -47,7 +49,7 @@ export function DefaultProductBlock({
             <p
               className={classNames(
                 "font-bold",
-                discountPrice ? "text-red-500" : ""
+                discountPrice ? "text-red-500" : "",
               )}
             >
               {discountPrice ? discountPrice : price}€
@@ -63,7 +65,7 @@ export function DefaultProductBlock({
                 let selectedOptions: { [any: string]: string } = {};
                 if (options) {
                   Object.keys(options).map(
-                    (option) => (selectedOptions[option] = options[option][0])
+                    (option) => (selectedOptions[option] = options[option][0]),
                   );
                 }
                 changeCartItems(_id, {

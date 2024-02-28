@@ -1,6 +1,6 @@
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 
-export const defaultProducts: ProductDataType[] = [
+export const defaultProducts: Product[] = [
   {
     _id: "1",
     title: "Product 1",

@@ -1,7 +1,8 @@
-import { Shop } from "@/models/shopModel";
-import { connectDB } from "@/utils/connectDB";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+import { connectDB } from "@/utils/connectDB";
+import { ShopModel } from "@/models/shopModel";
 
 export async function GET(request: Request) {
   const url = request.url;
@@ -10,16 +11,28 @@ export async function GET(request: Request) {
 
   await connectDB();
 
-  const type = headers().get("type") as string;
+  try {
+    const type = headers().get("type") as string;
 
-  const shop = await Shop.findOne({ link: shopLink }).select(`${type} -_id`);
+    const shop = await ShopModel.findOne({ link: shopLink }).select(
+      `${type} -_id`,
+    );
 
-  const response =
-    shop[type] && shop[type].length > 0
-      ? shop[type]
-      : ["EMPTY_SPECIAL_CATEGORIES"];
+    const response =
+      shop[type] && shop[type].length > 0
+        ? shop[type]
+        : ["EMPTY_SPECIAL_CATEGORIES"];
 
-  return NextResponse.json(response);
+    return NextResponse.json(response);
+  } catch (error) {
+    console.log("[ERROR WHILE GETTING SHOP CATEGORIES]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to load categories. Please try reloading the page",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function POST(request: Request) {
@@ -32,14 +45,24 @@ export async function POST(request: Request) {
 
   await connectDB();
 
-  const response = await Shop.findOneAndUpdate(
-    { link: shopLink },
-    {
-      $push: { [type]: title },
-    }
-  );
+  try {
+    const response = await ShopModel.findOneAndUpdate(
+      { link: shopLink },
+      {
+        $push: { [type]: title },
+      },
+    );
 
-  return NextResponse.json([...response[type], title]);
+    return NextResponse.json([...response[type], title]);
+  } catch (error) {
+    console.log("[ERROR WHILE CREATING SHOP CATEGORY]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to create category. Please try again",
+      },
+      { status: 500 },
+    );
+  }
 }
 
 export async function DELETE(request: Request) {
@@ -52,16 +75,26 @@ export async function DELETE(request: Request) {
 
   await connectDB();
 
-  const response = await Shop.findOneAndUpdate(
-    { link: shopLink },
-    {
-      $pull: { [type]: title },
-    }
-  );
+  try {
+    const response = await ShopModel.findOneAndUpdate(
+      { link: shopLink },
+      {
+        $pull: { [type]: title },
+      },
+    );
 
-  const categories = [
-    ...response[type].filter((category: string) => category !== title),
-  ];
+    const categories = [
+      ...response[type].filter((category: string) => category !== title),
+    ];
 
-  return NextResponse.json(categories);
+    return NextResponse.json(categories);
+  } catch (error) {
+    console.log("[ERROR WHILE DELETING SHOP CATEGORY]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to delete category. Please try again",
+      },
+      { status: 500 },
+    );
+  }
 }

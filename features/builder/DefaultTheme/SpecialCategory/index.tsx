@@ -1,7 +1,7 @@
 import { DefaultProductBlock } from "@/features/builder/DefaultTheme/DefaultProductBlock";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 import Link from "next/link";
-import {useLocalStorage} from "@/utils/useLocalStorage";
+import { useLocalStorage } from "@/utils/useLocalStorage";
 
 export function SpecialCategory({
   category,
@@ -9,16 +9,16 @@ export function SpecialCategory({
   shopLink,
 }: {
   category: string;
-  products: ProductDataType[];
+  products: Product[];
   shopLink: string;
 }) {
   function getCategoryProducts() {
     if (category === "All Products") return products;
 
-    const categoryProducts: ProductDataType[] = [];
+    const categoryProducts: Product[] = [];
     products.forEach(
       (product) =>
-        product.specialCategory === category && categoryProducts.push(product)
+        product.specialCategory === category && categoryProducts.push(product),
     );
     return categoryProducts;
   }

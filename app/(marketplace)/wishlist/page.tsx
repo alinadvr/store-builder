@@ -1,16 +1,18 @@
 "use client";
 
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
+
+import { useLocalStorage } from "@/utils/useLocalStorage";
+import { Product } from "@/models/productModel";
+
 import { Loading } from "@/components/layout/Loading";
+import { EmptyState } from "@/features/marketplace/ProductList/EmptyState";
 import { ProductBlock } from "@/features/marketplace/ProductBlock";
 import { AdditionalProducts } from "@/features/marketplace/ProductList/AdditionalProducts";
-import { EmptyState } from "@/features/marketplace/ProductList/EmptyState";
-import { ProductDataType } from "@/models/productModel";
-import { useLocalStorage } from "@/utils/useLocalStorage";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
 
-export default function WishLish() {
-  const { data: products, isLoading } = useQuery({
+export default function WishList() {
+  const { data: products } = useQuery({
     queryKey: ["products"],
     queryFn: () => axios("/api/products"),
   });
@@ -28,7 +30,7 @@ export default function WishLish() {
           <div className="grid grid-cols-5 gap-4">
             {products &&
               products.data.map(
-                (product: ProductDataType) =>
+                (product: Product) =>
                   saved?.indexOf(product._id) !== -1 && (
                     <ProductBlock
                       key={product._id}
@@ -36,7 +38,7 @@ export default function WishLish() {
                       saved={true}
                       updateSaved={() => setSaved(product._id)}
                     />
-                  )
+                  ),
               )}
           </div>
         ) : (

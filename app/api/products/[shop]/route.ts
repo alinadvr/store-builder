@@ -1,8 +1,9 @@
-import { Product } from "@/models/productModel";
-import { Shop } from "@/models/shopModel";
-import { connectDB } from "@/utils/connectDB";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
+
+import { connectDB } from "@/utils/connectDB";
+import { ShopModel } from "@/models/shopModel";
+import { ProductModel } from "@/models/productModel";
 
 export async function GET(request: Request) {
   const url = request.url;
@@ -11,18 +12,28 @@ export async function GET(request: Request) {
 
   await connectDB();
 
-  const shopId = await Shop.findOne({ link: shopLink }).select("_id");
+  try {
+    const shopId = await ShopModel.findOne({ link: shopLink }).select("_id");
 
-  const products = await Product.find({
-    shop: new mongoose.Types.ObjectId(shopId),
-  });
+    const products = await ProductModel.find({
+      shop: new mongoose.Types.ObjectId(shopId),
+    });
 
-  const response = products.map((product) => ({
-    ...product._doc,
-    price: Number(product.price).toFixed(2),
-    discountPrice:
-      product.discountPrice && Number(product.discountPrice).toFixed(2),
-  }));
+    const response = products.map((product) => ({
+      ...product._doc,
+      price: Number(product.price).toFixed(2),
+      discountPrice:
+        product.discountPrice && Number(product.discountPrice).toFixed(2),
+    }));
 
-  return NextResponse.json(response);
+    return NextResponse.json(response);
+  } catch (error) {
+    console.log("[ERROR WHILE GETTING SHOP PRODUCTS]", error);
+    return NextResponse.json(
+      {
+        message: "Failed to load products. Please try reloading the page",
+      },
+      { status: 500 },
+    );
+  }
 }

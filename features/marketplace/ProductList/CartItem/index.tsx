@@ -1,7 +1,7 @@
 "use client";
 
 import { NumberInput } from "@/components/fields/NumberInput";
-import { ShopDataType } from "@/models/shopModel";
+import { Shop } from "@/models/shopModel";
 import classNames from "@/utils/classNames";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
@@ -12,7 +12,7 @@ export interface CartProductDataType {
   title: string;
   price: string;
   discountPrice?: string;
-  shop: ShopDataType | string;
+  shop: Shop | string;
   amount: number;
   images: string[];
   options?: { [any: string]: string; product_amount: string };
@@ -57,7 +57,7 @@ export function CartItem({
                     <li key={option}>
                       {option}: {options[option]}
                     </li>
-                  )
+                  ),
               )}
           </ul>
         </div>
@@ -73,7 +73,7 @@ export function CartItem({
         <h2
           className={classNames(
             "text-lg font-bold",
-            discountPrice ? "text-red-500" : "dark:text-violet-300"
+            discountPrice ? "text-red-500" : "dark:text-violet-300",
           )}
         >
           {discountPrice ? discountPrice : price}€

@@ -1,14 +1,14 @@
 "use client";
 
 import { ProductBlock } from "@/features/marketplace/ProductBlock";
-import { ProductDataType } from "@/models/productModel";
+import { Product } from "@/models/productModel";
 
 export function AdditionalProducts({
   products,
   saved,
   setSaved,
 }: {
-  products: ProductDataType[];
+  products: Product[];
   saved?: string | string[];
   setSaved: (productId: string) => void;
 }) {

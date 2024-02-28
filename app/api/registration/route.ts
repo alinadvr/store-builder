@@ -1,4 +1,4 @@
-import { Shop, ShopDataType } from "@/models/shopModel";
+import { ShopModel, Shop } from "@/models/shopModel";
 import { connectDB } from "@/utils/connectDB";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 
   await connectDB();
 
-  const shopTitle: ShopDataType | undefined = await Shop.findOne({
+  const shopTitle: Shop | undefined = await ShopModel.findOne({
     title,
   }).catch(() => undefined);
 
@@ -25,8 +25,8 @@ export async function POST(request: Request) {
       message: "The shop with this name already exists. Please try another one",
     });
 
-  const shop: ShopDataType | undefined = await Shop.findOne({ email }).catch(
-    () => undefined
+  const shop: Shop | undefined = await ShopModel.findOne({ email }).catch(
+    () => undefined,
   );
 
   if (shop)
@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
   const link = title.toLowerCase().split(" ").join("-");
 
-  await Shop.create({
+  await ShopModel.create({
     title,
     link,
     email,

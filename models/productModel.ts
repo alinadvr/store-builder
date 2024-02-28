@@ -1,7 +1,7 @@
-import { ShopDataType } from "@/models/shopModel";
+import { Shop } from "@/models/shopModel";
 import { model, models, Schema } from "mongoose";
 
-export interface ProductDataType {
+export interface Product {
   _id: string;
   title: string;
   price: string;
@@ -10,7 +10,7 @@ export interface ProductDataType {
   categoryShop: string;
   categoryMP: string;
   specialCategory?: string;
-  shop: ShopDataType | string;
+  shop: Shop | string;
   amount: number;
   description?: string;
   options?: { [any: string]: string[] };
@@ -59,4 +59,4 @@ const productSchema = new Schema({
   popular: Boolean,
 });
 
-export const Product = models.Product || model("Product", productSchema);
+export const ProductModel = models.Product || model("Product", productSchema);

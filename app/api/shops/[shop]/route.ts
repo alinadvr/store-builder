@@ -1,4 +1,4 @@
-import { Shop } from "@/models/shopModel";
+import { ShopModel } from "@/models/shopModel";
 import { connectDB } from "@/utils/connectDB";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
@@ -10,8 +10,8 @@ export async function GET(request: Request) {
 
   await connectDB();
 
-  const response = await Shop.findOne({ link: shopLink }).select(
-    "-email -password"
+  const response = await ShopModel.findOne({ link: shopLink }).select(
+    "-email -password",
   );
 
   return NextResponse.json(response);
@@ -27,9 +27,9 @@ export async function PUT(request: Request) {
 
   await connectDB();
 
-  const response = await Shop.updateOne(
+  const response = await ShopModel.updateOne(
     { link: shopLink },
-    { [valueToUpdate as string]: fileUrl }
+    { [valueToUpdate as string]: fileUrl },
   );
 
   return NextResponse.json(response);

@@ -1,4 +1,4 @@
-import { Shop } from "@/models/shopModel";
+import { ShopModel } from "@/models/shopModel";
 import { User } from "@/models/userModel";
 import { connectDB } from "@/utils/connectDB";
 import bcrypt from "bcrypt";
@@ -20,19 +20,19 @@ const handler = NextAuth({
 
         if (!email || !password)
           throw new Error(
-            "Shop name, email or password missed. Please fill out the field and try again"
+            "Shop name, email or password missed. Please fill out the field and try again",
           );
 
         await connectDB();
 
         let account;
         if (loginType === "shop")
-          account = await Shop.findOne({ email }).catch(() => undefined);
+          account = await ShopModel.findOne({ email }).catch(() => undefined);
         else account = await User.findOne({ email }).catch(() => undefined);
 
         if (!account)
           throw new Error(
-            'Account with that email does not exist. Please try to switch between the "As customer" and "As seller" tabs'
+            'Account with that email does not exist. Please try to switch between the "As customer" and "As seller" tabs',
           );
 
         const match = await bcrypt.compare(password, account.password);
