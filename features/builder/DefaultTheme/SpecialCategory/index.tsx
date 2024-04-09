@@ -1,7 +1,7 @@
 import { DefaultProductBlock } from "@/features/builder/DefaultTheme/DefaultProductBlock";
 import { Product } from "@/models/productModel";
 import Link from "next/link";
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 
 export function SpecialCategory({
   category,

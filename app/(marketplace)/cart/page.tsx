@@ -9,12 +9,11 @@ import {
 import { EmptyState } from "@/features/marketplace/ProductList/EmptyState";
 import { TotalOrder } from "@/features/marketplace/ProductList/TotalOrder";
 import { getCartProducts } from "@/utils/getCartProducts";
-import { useCart } from "@/utils/useCart";
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useCart } from "@/hooks/useCart";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { ToastContainer } from "react-toastify";
 
 export default function Cart() {
   const session = useSession();
@@ -74,7 +73,7 @@ export default function Cart() {
                 (accumulator: number, currentValue: CartProductDataType) =>
                   accumulator +
                   Number(currentValue.options?.product_amount || 0),
-                0
+                0,
               )}
               sale={cartProducts.reduce(
                 (accumulator: number, currentValue: CartProductDataType) =>
@@ -84,7 +83,7 @@ export default function Cart() {
                         Number(currentValue.discountPrice || 0)) *
                       Number(currentValue.options?.product_amount || 0)
                     : 0),
-                0
+                0,
               )}
               totalPrice={cartProducts.reduce(
                 (accumulator: number, currentValue: CartProductDataType) =>
@@ -94,7 +93,7 @@ export default function Cart() {
                       Number(currentValue.options?.product_amount || 0)
                     : Number(currentValue.price) *
                       Number(currentValue.options?.product_amount || 0)),
-                0
+                0,
               )}
               status={session.status}
               cartProducts={cartProducts}
@@ -110,7 +109,6 @@ export default function Cart() {
           setSaved={setSaved}
         />
       )}
-      <ToastContainer />
     </main>
   );
 }

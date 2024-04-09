@@ -6,7 +6,7 @@ import { SelectInput } from "@/components/fields/SelectInput";
 import { TextInput } from "@/components/fields/TextInput";
 import { CartProductDataType } from "@/features/marketplace/ProductList/CartItem";
 import classNames from "@/utils/classNames";
-import { useCart } from "@/utils/useCart";
+import { useCart } from "@/hooks/useCart";
 import axios from "axios";
 import { toast } from "react-toastify";
 
@@ -58,14 +58,14 @@ export function CheckoutModal({
         "fixed inset-0 z-50 flex items-center justify-center bg-overlay transition-opacity duration-500",
         isOpen
           ? "pointer-events-auto opacity-100"
-          : "pointer-events-none opacity-0"
+          : "pointer-events-none opacity-0",
       )}
     >
       <form
         onSubmit={createOrder}
         className={classNames(
           "mx-auto flex w-1/3 flex-col gap-3 rounded-xl bg-violet-200 p-8 drop-shadow-lg transition-transform duration-500",
-          isOpen ? "translate-y-0" : "-translate-y-20"
+          isOpen ? "translate-y-0" : "-translate-y-20",
         )}
       >
         <div className="flex gap-3">

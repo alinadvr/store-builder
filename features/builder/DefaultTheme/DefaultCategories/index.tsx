@@ -4,7 +4,7 @@ import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { Loading } from "@/components/layout/Loading";
 import { DefaultProductBlock } from "@/features/builder/DefaultTheme/DefaultProductBlock";
 import { Product } from "@/models/productModel";
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 

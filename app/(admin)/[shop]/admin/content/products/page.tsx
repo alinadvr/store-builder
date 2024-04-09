@@ -1,31 +1,32 @@
 "use client";
 
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { Loading } from "@/components/layout/Loading";
-import { Product } from "@/models/productModel";
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import { Product } from "@/models/productModel";
+
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { Loading } from "@/components/layout/Loading";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 
 export default function Products({ params }: { params: { shop: string } }) {
   const session = useSession();
   const queryClient = useQueryClient();
 
   const { data: products, isLoading } = useQuery({
-    queryKey: ["products", session.data?.user.image],
-    queryFn: () => axios.get(`/api/products/${session.data?.user.image}`),
-    enabled: !!session.data?.user.image,
+    queryKey: ["products", session.data?.user.link],
+    queryFn: () => axios.get(`/api/products/${session.data?.user.link}`),
+    enabled: !!session.data?.user.link,
   });
 
   const deleteProduct = useMutation({
     mutationFn: (title: string) =>
-      axios.delete(`/api/products/${session.data?.user.image}/${title}/`),
+      axios.delete(`/api/products/${session.data?.user.link}/${title}/`),
     onSuccess: ({ data }) => {
-      console.log(data);
       queryClient.setQueryData(
-        ["products", session.data?.user.image],
+        ["products", session.data?.user.link],
         products && {
           data: products.data.filter(
             (product: Product) => product._id !== data._id,
@@ -88,7 +89,7 @@ export default function Products({ params }: { params: { shop: string } }) {
                       <td className="p-4">{article}</td>
                       <td className="p-4">
                         <Link
-                          href={`/shop/${session.data?.user.image}/${title}`}
+                          href={`/shop/${session.data?.user.link}/${title}`}
                         >
                           {title}
                         </Link>
@@ -104,7 +105,6 @@ export default function Products({ params }: { params: { shop: string } }) {
                         <TrashIcon
                           className="w-5 cursor-pointer text-slate-400"
                           onClick={() => {
-                            console.log("click");
                             deleteProduct.mutate(title);
                           }}
                         />

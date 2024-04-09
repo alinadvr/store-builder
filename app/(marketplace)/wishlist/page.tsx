@@ -3,7 +3,7 @@
 import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { Product } from "@/models/productModel";
 
 import { Loading } from "@/components/layout/Loading";

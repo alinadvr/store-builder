@@ -1,8 +1,13 @@
 "use client";
 
-import { ThemeToggle } from "@/components/layout/Header/ThemeToogle";
-import { Loading } from "@/components/layout/Loading";
-import registrationBackground from "@/public/registration_background.svg";
+import axios, { AxiosError } from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { signIn, useSession } from "next-auth/react";
+
 import {
   AtSymbolIcon,
   BuildingStorefrontIcon,
@@ -13,30 +18,36 @@ import {
   UserCircleIcon,
   UserPlusIcon,
 } from "@heroicons/react/24/outline";
-import axios from "axios";
-import { signIn, useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
+import { ThemeToggle } from "@/components/layout/Header/ThemeToogle";
+import { Loading } from "@/components/layout/Loading";
+
+import registrationBackground from "@/public/registration_background.svg";
+import { DefaultMessages } from "@/types/manifest";
 
 export default function Registration() {
   const router = useRouter();
   const session = useSession();
 
-  async function handleSubmit(formData: FormData) {
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target as HTMLFormElement);
+
     try {
-      const { data } = await axios.post("/api/registration", {
+      await axios.post("/api/registration", {
         title: formData.get("title")?.valueOf(),
         email: formData.get("email")?.valueOf(),
         password: formData.get("password")?.valueOf(),
       });
 
-      if (data.status === 400) return toast.error(data.message);
-
-      await router.push(`/login`);
-    } catch (e) {
-      console.log(e);
+      toast.success("New shop created successfully");
+      router.push(`/login`);
+    } catch (error) {
+      toast.error(
+        error instanceof AxiosError && error?.response?.data?.message
+          ? error.response.data.message
+          : DefaultMessages.ServerError,
+      );
     }
   }
 
@@ -63,8 +74,8 @@ export default function Registration() {
               <>
                 <Link
                   href={
-                    session.data?.user?.image
-                      ? `/${session.data?.user?.image}/admin`
+                    session.data?.user?.link
+                      ? `/${session.data?.user?.link}/admin`
                       : "/account"
                   }
                 >
@@ -72,10 +83,9 @@ export default function Registration() {
                 </Link>
               </>
             ) : session.status === "unauthenticated" ? (
-              <UserCircleIcon
-                onClick={() => signIn()}
-                className="cursor-pointer"
-              />
+              <button type="button" onClick={() => signIn()}>
+                <UserCircleIcon />
+              </button>
             ) : (
               <Loading />
             )}
@@ -89,7 +99,7 @@ export default function Registration() {
             Sign up for <span className="font-bold">FREE</span> now!
           </p>
           <form
-            action={handleSubmit}
+            onSubmit={handleSubmit}
             className="flex flex-col items-center gap-3"
           >
             <div className="relative flex w-fit items-center">
@@ -158,7 +168,6 @@ export default function Registration() {
           className="absolute top-0 -z-10 min-h-[60vh] w-screen object-cover dark:brightness-50"
         />
       </main>
-      <ToastContainer />
     </>
   );
 }

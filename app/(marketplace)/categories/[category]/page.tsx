@@ -5,7 +5,7 @@ import { FilterBlock } from "@/features/marketplace/FilterBlock";
 import { FilterTabs } from "@/features/marketplace/FilterBlock/FilterTabs";
 import { ProductBlock } from "@/features/marketplace/ProductBlock";
 import { Product } from "@/models/productModel";
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -83,7 +83,6 @@ export default function Category({ params }: { params: { category: string } }) {
   }, [products]);
 
   useEffect(() => {
-    products && console.log(products.data);
     if (products && products?.data.length > 0) {
       if (selectedFilters.length === 0) setFilteredData(products.data);
       else {
@@ -93,7 +92,6 @@ export default function Category({ params }: { params: { category: string } }) {
             selectedFilters.forEach((selectedFilter) => {
               if (product.options && selectedFilter.filter in product.options) {
                 selectedFilter.options.map((option) => {
-                  console.log(option);
                   product.options![selectedFilter.filter].includes(option) &&
                     newFilteredData.indexOf(product) === -1 &&
                     newFilteredData.push(product);

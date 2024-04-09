@@ -1,26 +1,28 @@
 "use client";
 
-import { PrimaryButton } from "@/components/buttons/PrimaryButton";
-import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import axios, { AxiosError } from "axios";
+import Link from "next/link";
+import { FormEvent, useState } from "react";
+import { toast } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import type { OurFileRouter } from "@/app/api/uploadthing/core";
+import { generateReactHelpers } from "@uploadthing/react/hooks";
+
+import { mergeArrays } from "@/utils/mergeArrays";
+import { categories } from "@/components/layout/Header/categories";
+
+import { Loading } from "@/components/layout/Loading";
+import { TextInput } from "@/components/fields/TextInput";
+import { ImageUpload } from "@/features/builder/ImageUpload";
 import { NumberInput } from "@/components/fields/NumberInput";
 import { SelectInput } from "@/components/fields/SelectInput";
+import { PrimaryButton } from "@/components/buttons/PrimaryButton";
 import { TextAreaInput } from "@/components/fields/TextAreaInput";
-import { TextInput } from "@/components/fields/TextInput";
-import { categories } from "@/components/layout/Header/categories";
 import { AddOptionBlock } from "@/features/builder/AddOptionBlock";
-import { mergeArrays } from "@/utils/mergeArrays";
-import { generateReactHelpers } from "@uploadthing/react/hooks";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-
-import type { OurFileRouter } from "@/app/api/uploadthing/core";
-import { Loading } from "@/components/layout/Loading";
-import { ImageUpload } from "@/features/builder/ImageUpload";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { toast, ToastContainer } from "react-toastify";
+import { SecondaryButton } from "@/components/buttons/SecondaryButton";
+import { DefaultMessages } from "@/types/manifest";
 
 export default function Product({ params }: { params: { shop: string } }) {
   const router = useRouter();
@@ -28,23 +30,23 @@ export default function Product({ params }: { params: { shop: string } }) {
 
   const { data: categoriesShop, isLoading: categoriesShopIsLoading } = useQuery(
     {
-      queryKey: ["categories", session?.user.image],
+      queryKey: ["categories", session?.user.link],
       queryFn: () =>
-        axios.get(`/api/categories/${session?.user.image}`, {
+        axios.get(`/api/categories/${session?.user.link}`, {
           headers: { type: "categories" },
         }),
-      enabled: !!session?.user.image,
-    }
+      enabled: !!session?.user.link,
+    },
   );
 
   const { data: specialCategories, isLoading: specialCategoriesIsLoading } =
     useQuery({
-      queryKey: ["specialCategories", session?.user.image],
+      queryKey: ["specialCategories", session?.user.link],
       queryFn: () =>
-        axios.get(`/api/categories/${session?.user.image}`, {
+        axios.get(`/api/categories/${session?.user.link}`, {
           headers: { type: "specialCategories" },
         }),
-      enabled: !!session?.user.image,
+      enabled: !!session?.user.link,
     });
 
   const { useUploadThing } = generateReactHelpers<OurFileRouter>();
@@ -64,7 +66,7 @@ export default function Product({ params }: { params: { shop: string } }) {
   });
 
   const categoriesMP = categories.map(({ subcategories }) =>
-    subcategories.map((subcat) => subcat)
+    subcategories.map((subcat) => subcat),
   );
 
   function deleteImage(deleteFile: File) {
@@ -72,19 +74,24 @@ export default function Product({ params }: { params: { shop: string } }) {
       ...prevState.filter(
         (file) =>
           file.name !== deleteFile.name &&
-          file.lastModified !== deleteFile.lastModified
+          file.lastModified !== deleteFile.lastModified,
       ),
     ]);
   }
 
-  async function addProduct(data: FormData) {
+  async function addProduct(event: FormEvent) {
+    event.preventDefault();
+    setIsLoading(true);
+
+    const data = new FormData(event.target as HTMLFormElement);
+
     const images: string[] = [];
 
     const res = await startUpload(files);
     res && res.forEach(({ fileKey, fileUrl }) => images.push(fileUrl));
 
     try {
-      const response = await axios.post("/api/products", {
+      await axios.post("/api/products", {
         title: data.get("title")?.valueOf(),
         price: data.get("price")?.valueOf(),
         discountPrice:
@@ -97,15 +104,18 @@ export default function Product({ params }: { params: { shop: string } }) {
         amount: data.get("amount")?.valueOf(),
         description: data.get("description")?.valueOf(),
         specialCategory: data.get("specialCategory")?.valueOf(),
-        shop: session?.user.image,
+        shop: session?.user.link,
         options,
         images,
       });
 
-      router.push(`/${session?.user.image}/admin/content/products`);
-    } catch (error: any) {
-      console.log(error);
-      toast.error(error.message);
+      router.push(`/${session?.user.link}/admin/content/products`);
+    } catch (error) {
+      toast.error(
+        error instanceof AxiosError && error?.response?.data.message
+          ? error.response.data.message
+          : DefaultMessages.ServerError,
+      );
     } finally {
       setIsLoading(false);
     }
@@ -114,9 +124,9 @@ export default function Product({ params }: { params: { shop: string } }) {
   return (
     <main className="flex justify-center">
       <form
-        action={(data: FormData) => {
+        onSubmit={(event) => {
           setIsLoading(true);
-          addProduct(data);
+          addProduct;
         }}
         className="flex w-1/2 flex-col gap-6 rounded-xl bg-white p-6 drop-shadow"
       >
@@ -194,7 +204,7 @@ export default function Product({ params }: { params: { shop: string } }) {
           <p className="text-lg text-red-500">
             The shop doesn&lsquo;t have any category. Please add at least one in{" "}
             <Link
-              href={`/${session?.user.image}/admin/content/categories`}
+              href={`/${session?.user.link}/admin/content/categories`}
               className="underline"
             >
               the &ldquo;Categories&rdquo; tab
@@ -279,7 +289,6 @@ export default function Product({ params }: { params: { shop: string } }) {
           />
         </div>
       </form>
-      <ToastContainer />
     </main>
   );
 }

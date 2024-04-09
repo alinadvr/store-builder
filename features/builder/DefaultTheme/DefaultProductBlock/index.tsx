@@ -5,7 +5,7 @@ import Image from "next/image";
 import { toast } from "react-toastify";
 
 import classNames from "@/utils/classNames";
-import { useCart } from "@/utils/useCart";
+import { useCart } from "@/hooks/useCart";
 import { Product } from "@/models/productModel";
 
 import { LikeButton } from "@/components/buttons/LikeButton";

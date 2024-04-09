@@ -2,50 +2,59 @@ import { ShopModel, Shop } from "@/models/shopModel";
 import { connectDB } from "@/utils/connectDB";
 import bcrypt from "bcrypt";
 import { NextResponse } from "next/server";
+import { DefaultMessages } from "@/types/manifest";
 
 export async function POST(request: Request) {
   const { title, email, password } = await request.json();
 
   if (!title || !email || !password)
-    return NextResponse.json({
-      status: 400,
-      message:
-        "Shop name, email or password missed. Please fill out the field and try again",
-    });
+    return NextResponse.json(
+      {
+        message:
+          "Shop name, email or password missed. Please fill out the field and try again",
+      },
+      { status: 400 },
+    );
 
   await connectDB();
 
-  const shopTitle: Shop | undefined = await ShopModel.findOne({
-    title,
-  }).catch(() => undefined);
-
-  if (shopTitle)
-    return NextResponse.json({
-      status: 400,
-      message: "The shop with this name already exists. Please try another one",
+  try {
+    const shop: Shop | null = await ShopModel.findOne({
+      $or: [{ title }, { email }],
     });
 
-  const shop: Shop | undefined = await ShopModel.findOne({ email }).catch(
-    () => undefined,
-  );
-
-  if (shop)
-    return NextResponse.json({
-      status: 400,
-      message: "The shop with this email already exists",
-    });
+    if (shop)
+      return NextResponse.json(
+        {
+          message:
+            "The shop with this name or email already exists. Please try another one",
+        },
+        { status: 400 },
+      );
+  } catch (error) {
+    console.log(`[ERROR WHILE GETTING SHOP WHILE CREATING NEW SHOP]`, error);
+    return NextResponse.json({ message: DefaultMessages.ServerError });
+  }
 
   const salt = await bcrypt.genSalt(12);
   const passwordHash = await bcrypt.hash(password, salt);
 
   const link = title.toLowerCase().split(" ").join("-");
 
-  await ShopModel.create({
-    title,
-    link,
-    email,
-    password: passwordHash,
-  });
+  try {
+    await ShopModel.create({
+      title,
+      link,
+      email,
+      password: passwordHash,
+    });
 
-  return NextResponse.json({ title });
+    return NextResponse.json({ title }, { status: 200 });
+  } catch (error) {
+    console.log("[ERROR WHILE CREATING NEW SHOP]", error);
+    return NextResponse.json(
+      { message: DefaultMessages.ServerError },
+      { status: 500 },
+    );
+  }
 }

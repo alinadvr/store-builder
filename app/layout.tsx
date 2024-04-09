@@ -1,5 +1,7 @@
-import { Providers } from "@/components/layout/Providers";
 import { poppins } from "@/styles/fonts";
+
+import { Providers } from "@/components/layout/Providers";
+
 import "@/styles/global.css";
 
 export default function RootLayout({

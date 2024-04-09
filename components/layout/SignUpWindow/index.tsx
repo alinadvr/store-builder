@@ -1,27 +1,42 @@
 "use client";
 
-import { SignUpInputField } from "@/components/fields/SignUpInputField";
-import classNames from "@/utils/classNames";
-import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-import { signIn } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
+import { toast } from "react-toastify";
+
+import classNames from "@/utils/classNames";
+
+import { AtSymbolIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+import { SignUpInputField } from "@/components/fields/SignUpInputField";
+import { DefaultMessages } from "@/types/manifest";
 
 export function SignUpWindow() {
   const [activeTab, setActiveTab] = useState(0);
 
-  async function handleSubmit(formData: FormData) {
+  const router = useRouter();
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault();
+
+    const formData = new FormData(event.target as HTMLFormElement);
+
     try {
-      await signIn("credentials", {
+      const response = await signIn("credentials", {
         email: formData.get("email")?.valueOf(),
         password: formData.get("password")?.valueOf(),
         loginType: activeTab === 0 ? "user" : "shop",
-        redirect: true,
-        callbackUrl: "/",
+        redirect: false,
       });
+
+      if (!response || response.status !== 200)
+        return toast.error(response?.error ?? DefaultMessages.ServerError);
+
+      if (response.status === 200) router.push("/");
     } catch (e) {
-      console.log(e);
+      toast.error(DefaultMessages.ServerError);
     }
   }
 
@@ -39,7 +54,7 @@ export function SignUpWindow() {
                 "w-1/2 cursor-pointer border-b border-violet-300 pb-1 transition-colors hover:border-violet-400 dark:border-violet-500 dark:hover:border-violet-400",
                 activeTab === index
                   ? "text-violet-500 dark:text-violet-200"
-                  : "text-violet-300 hover:text-violet-400 dark:text-violet-500 dark:hover:text-violet-400"
+                  : "text-violet-300 hover:text-violet-400 dark:text-violet-500 dark:hover:text-violet-400",
               )}
               onClick={() => setActiveTab(index)}
             >
@@ -49,11 +64,11 @@ export function SignUpWindow() {
           <div
             className={classNames(
               "absolute bottom-0 h-2 w-1/2 border-b border-violet-500 transition-transform duration-300 dark:border-violet-200",
-              activeTab ? "translate-x-full" : "translate-x-0"
+              activeTab ? "translate-x-full" : "translate-x-0",
             )}
           ></div>
         </ul>
-        <form className="grid gap-4" action={handleSubmit}>
+        <form className="grid gap-4" onSubmit={handleSubmit}>
           <div className="relative">
             <SignUpInputField
               type="email"
@@ -92,7 +107,7 @@ export function SignUpWindow() {
             "flex h-12 w-full items-center justify-center gap-3 rounded-lg bg-white text-violet-500 dark:bg-violet-300 dark:text-white",
             activeTab === 1
               ? "pointer-events-none opacity-0"
-              : "opacity-1 pointer-events-auto"
+              : "opacity-1 pointer-events-auto",
           )}
           onClick={() =>
             signIn("google", { callbackUrl: "http://localhost:3000" })
@@ -108,7 +123,7 @@ export function SignUpWindow() {
         </button>
         <p className="text-center text-violet-500 dark:text-violet-400">
           Do not have an account?{" "}
-          <Link href="#" className="font-bold">
+          <Link href="/registration" className="font-bold">
             Sign Up
           </Link>
         </p>

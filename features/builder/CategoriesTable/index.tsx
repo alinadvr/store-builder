@@ -19,31 +19,31 @@ export default function CategoriesTable({
   const queryClient = useQueryClient();
 
   const { data: categories, isLoading } = useQuery({
-    queryKey: [type, session?.user.image],
+    queryKey: [type, session?.user.link],
     queryFn: () =>
-      axios.get(`/api/categories/${session?.user.image}`, {
+      axios.get(`/api/categories/${session?.user.link}`, {
         headers: { type },
       }),
-    enabled: !!session?.user.image,
+    enabled: !!session?.user.link,
   });
   const createCategory = useMutation({
     mutationFn: (title: string) =>
       axios.post(
-        `/api/categories/${session?.user.image}/`,
+        `/api/categories/${session?.user.link}/`,
         { title },
-        { headers: { type } }
+        { headers: { type } },
       ),
     onSuccess: (data) => {
-      queryClient.setQueryData([type, session?.user.image], data);
+      queryClient.setQueryData([type, session?.user.link], data);
     },
   });
   const deleteCategory = useMutation({
     mutationFn: (title: string) =>
-      axios.delete(`/api/categories/${session?.user.image}/`, {
+      axios.delete(`/api/categories/${session?.user.link}/`, {
         headers: { type, title },
       }),
     onSuccess: (data) => {
-      queryClient.setQueryData([type, session?.user.image], data);
+      queryClient.setQueryData([type, session?.user.link], data);
     },
   });
 

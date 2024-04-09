@@ -6,7 +6,7 @@ import { ImageUpload } from "@/features/builder/ImageUpload";
 import { generateReactHelpers } from "@uploadthing/react/hooks";
 import axios from "axios";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 export default function Images({ params }: { params: { shop: string } }) {
   const [banner, setBanner] = useState<File[]>([]);
@@ -35,7 +35,7 @@ export default function Images({ params }: { params: { shop: string } }) {
           { fileUrl: res[0].fileUrl },
           {
             headers: { value },
-          }
+          },
         );
 
         toast.success("Image uploaded successfully");
@@ -118,7 +118,6 @@ export default function Images({ params }: { params: { shop: string } }) {
           />
         </section>
       </div>
-      <ToastContainer />
     </main>
   );
 }

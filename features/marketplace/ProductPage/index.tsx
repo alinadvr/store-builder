@@ -6,7 +6,6 @@ import { DefaultLayout } from "@/features/builder/DefaultTheme/DefaultLayout";
 import { DefaultProductPage } from "@/features/builder/DefaultTheme/DefaultProductPage";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { ToastContainer } from "react-toastify";
 
 export function ProductPage({
   shopLink,
@@ -36,7 +35,6 @@ export function ProductPage({
     return (
       <DefaultLayout shopLink={shopLink}>
         <DefaultProductPage product={product.data} />
-        <ToastContainer />
       </DefaultLayout>
     );
 

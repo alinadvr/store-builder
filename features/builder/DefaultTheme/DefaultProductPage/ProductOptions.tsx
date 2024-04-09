@@ -2,8 +2,8 @@
 
 import { LikeButton } from "@/components/buttons/LikeButton";
 import classNames from "@/utils/classNames";
-import { useCart } from "@/utils/useCart";
-import { useLocalStorage } from "@/utils/useLocalStorage";
+import { useCart } from "@/hooks/useCart";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -14,17 +14,16 @@ export function ProductOptions({
   productId: string;
   options?: { [any: string]: string[] };
 }) {
-  console.log(options);
   function getDefaultOptions(options: { [any: string]: string[] }) {
     const defaultOptions: { [any: string]: string } = {};
     Object.keys(options).forEach(
-      (option) => (defaultOptions[option] = options[option][0])
+      (option) => (defaultOptions[option] = options[option][0]),
     );
     return defaultOptions;
   }
 
   const [selectedOptions, setSelectedOptions] = useState(
-    options ? getDefaultOptions(options) : {}
+    options ? getDefaultOptions(options) : {},
   );
 
   const { cartItems, changeCartItems } = useCart();
@@ -59,7 +58,7 @@ export function ProductOptions({
                         "cursor-pointer rounded-full px-5 py-1",
                         selectedOptions[option] === value
                           ? "border-[3px] border-black"
-                          : "border border-slate-200"
+                          : "border border-slate-200",
                       )}
                       onClick={() => changeSelectedOptions(option, value)}
                     >

@@ -1,13 +1,15 @@
 "use client";
 
-import { Loading } from "@/components/layout/Loading";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+
 import {
   HeartIcon,
   ShoppingCartIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
-import { signIn, useSession } from "next-auth/react";
-import Link from "next/link";
+
+import { Loading } from "@/components/layout/Loading";
 
 export function UserNav() {
   const session = useSession();
@@ -24,8 +26,8 @@ export function UserNav() {
         <>
           <Link
             href={
-              session.data?.user?.image
-                ? `/${session.data?.user?.image}/admin`
+              session.data?.user?.link
+                ? `/${session.data?.user?.link}/admin`
                 : "/account"
             }
           >

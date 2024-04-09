@@ -1,18 +1,21 @@
 "use client";
 
-import { Search } from "@/components/layout/Header/Search";
-import { ThemeToggle } from "@/components/layout/Header/ThemeToogle";
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
+
 import { categories } from "@/components/layout/Header/categories";
-import { Loading } from "@/components/layout/Loading";
+
 import {
+  ArrowLeftStartOnRectangleIcon,
   HeartIcon,
   ShoppingCartIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Squares2X2Icon } from "@heroicons/react/24/solid";
-import { signIn, useSession } from "next-auth/react";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { Search } from "@/components/layout/Header/Search";
+import { ThemeToggle } from "@/components/layout/Header/ThemeToogle";
+import { Loading } from "@/components/layout/Loading";
 
 export function Header() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -82,13 +85,16 @@ export function Header() {
           <>
             <Link
               href={
-                session.data?.user?.image
-                  ? `/${session.data?.user?.image}/admin`
+                session.data?.user?.link
+                  ? `/${session.data?.user?.link}/admin`
                   : "/account"
               }
             >
               <UserCircleIcon />
             </Link>
+            <button type="button" onClick={() => signOut()}>
+              <ArrowLeftStartOnRectangleIcon />
+            </button>
           </>
         ) : session.status === "unauthenticated" ? (
           <UserCircleIcon onClick={() => signIn()} className="cursor-pointer" />
